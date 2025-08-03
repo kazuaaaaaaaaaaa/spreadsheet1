@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <script src="https://cdn.jsdelivr.net/npm/tabletop@1.6.0/tabletop.js"></script>
+</head>
+<body>
+  <div id="jobs"></div>
+
+  <script>
+    Tabletop.init({
+      key: 'https://docs.google.com/spreadsheets/d/1HLsR41ZulRENJGKJqCcqKLUU56ZdSXgzAOvqy9Intck/pubhtml',
+      callback: function(data) {
+        const container = document.getElementById("jobs");
+        data.forEach(item => {
+          const job = `<div><h3>${item.職種}</h3><p>${item.勤務地}</p><a href="${item.リンク}">詳細</a></div>`;
+          container.innerHTML += job;
+        });
+      },
+      simpleSheet: true
+    });
+  </script>
+</body>
+</html>
