@@ -2,23 +2,45 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <script src="https://cdn.jsdelivr.net/npm/tabletop@1.6.0/tabletop.js"></script>
+  <title>求人情報一覧</title>
 </head>
 <body>
-  <div id="jobs"></div>
+  <h2>求人一覧</h2>
+  <div id="jobs">読み込み中...</div>
 
   <script>
-    Tabletop.init({
-      key: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTic4cIUJWd-km2QsZp3SSGD58uZwWCYd_U54AisZ62nN3MYsXSn4D1Hjg0wZmFkAPILU9Yn7_qsQGa/pubhtml',
-      callback: function(data) {
+    fetch("https://v1.nocodeapi.com/tanakaaaaaaaaaa/google_sheets/gchHXAwJsrMeUKjB?tabId=Sheet1")
+      .then(response => {
+        console.log("ステータス:", response.status);
+        return response.json();
+      })
+      .then(data => {
+        console.log("取得データ:", data);
         const container = document.getElementById("jobs");
-        data.forEach(item => {
-          const job = `<div><h3>${item.職種}</h3><p>${item.勤務地}</p><a href="${item.リンク}">詳細</a></div>`;
-          container.innerHTML += job;
-        });
-      },
-      simpleSheet: true
-    });
+
+        const jobs = data.data; // ← JSON配列の中の data を使う
+
+        if (!jobs || jobs.length === 0) {
+          container.innerHTML = "<p>データが見つかりませんでした</p>";
+          return;
+        }
+
+        let html = "";
+        for (let i = 0; i < jobs.length; i++) {
+          const job = jobs[i];
+          html += `<div style="margin-bottom: 1em;">
+                     <h3>${job.職種}</h3>
+                     <p>${job.勤務地}</p>
+                     <a href="${job.リンク}" target="_blank">詳細</a>
+                   </div>`;
+        }
+
+        container.innerHTML = html;
+      })
+      .catch(error => {
+        console.error("Fetchエラー:", error);
+        document.getElementById("jobs").innerHTML = "<p>データの取得に失敗しました</p>";
+      });
   </script>
 </body>
 </html>
