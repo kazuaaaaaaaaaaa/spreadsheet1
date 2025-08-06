@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>奄美の空き家マップ</title>
+  <style>
+    #map { height: 80vh; width: 100%; }
+  </style>
+</head>
+<body>
+  <h2>奄美の空き家情報マップ</h2>
+  <div id="map"></div>
+
+  <script>
+    // 地図初期化関数
+    function initMap() {
+      const center = { lat: 28.3771, lng: 129.4855 }; // 奄美市周辺
+      const map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 11,
+        center: center
+      });
+      https://v1.nocodeapi.com/tanakaaaaaaaaaa/google_sheets/hlMaymlVdalOBBiF
+      // スプレッドシートデータ取得
+      fetch("https://v1.nocodeapi.com/tanakaaaaaaaaaa/google_sheets/gchHXAwJsrMeUKjB?tabId=Sheet2")
+
+
+        .then(response => response.json())
+        .then(result => {
+          const data = result.data;
+          data.forEach(row => {
+            const lat = parseFloat(row.緯度);
+            const lng = parseFloat(row.経度);
+            const marker = new google.maps.Marker({
+              position: { lat, lng },
+              map: map,
+              title: row.物件名
+            });
+
+            const infowindow = new google.maps.InfoWindow({
+              content: `<strong>${row.物件名}</strong><br>${row.住所}<br><a href="${row.詳細リンク}" target="_blank">詳細</a>`
+            });
+
+            marker.addListener('click', () => infowindow.open(map, marker));
+          });
+        })
+        .catch(error => {
+          console.error("データ取得エラー:", error);
+        });
+    }
+  </script>
+
+  <!-- Google Maps API（YOUR_API_KEYを取得して置き換えてください） -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIgAuay5LS7DbFamGYMkVvU_LNe7_eMqM&callback=initMap" async defer></script>
+</body>
+</html>
+
+
